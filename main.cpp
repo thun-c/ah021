@@ -19,7 +19,8 @@ using std::vector;
 
 constexpr const int N = 30;
 constexpr const int M = 465;
-constexpr const int K = 3;
+constexpr const int K = 10000;
+// constexpr const int K = 1;
 
 constexpr const int64_t INF = 1000000000LL; // あり得ないぐらい大きなスコアの例を用意しておく
 
@@ -131,19 +132,23 @@ public:
 
         auto gap0 = get_gap(id0);
         auto gap1 = get_gap(id1);
-        if (gap0 == 0)
-        {
-            filled_n--;
-        }
         this->gap_sum_ += gap0 + gap1;
 
         std::swap(nums[id0], nums[id1]);
         gap0 = get_gap(id0);
         gap1 = get_gap(id1);
 
-        if (gap0 == 0)
+        // if (id_to_x[id1] == target_x_)
+        // {
+        //     cerr << "tourch " << target_x_ << endl;
+        //     cerr << "gap0 " << gap0 << endl;
+        //     cerr << "gap1 " << gap1 << endl;
+        // }
+
+        if ((gap0 == 0 && id_to_x[id0] == target_x_) || (gap1 == 0 && id_to_x[id1] == target_x_))
         {
             filled_n++;
+            // cerr << "filled_n update to " << filled_n << endl;
         }
         this->gap_sum_ -= gap0 + gap1;
         if (filled_n == target_x_ + 1)
@@ -182,9 +187,10 @@ public:
             int num_x = id_to_x[num];
             if (num_x == target_x_ && id_x != num_x)
             {
-                for (auto &neigbor : this->neigbors(id_x))
+                for (auto &neigbor : this->neigbors(id))
                 {
-                    actions.emplace_back(id_x, neigbor);
+                    // cerr << "negibor " << neigbor << " xy " << id_to_x[neigbor] << " " << id_to_y[neigbor] << endl;
+                    actions.emplace_back(id, neigbor);
                 }
             }
         }
@@ -224,13 +230,19 @@ std::vector<std::pair<int, int>> beamSearchAction(std::shared_ptr<State> state, 
         {
             if (now_beam.empty())
                 break;
+
             std::shared_ptr<State> now_state = now_beam.top();
+
+            // cerr << "i " << i << endl;
+            // cerr << "target_x " << now_state->target_x_ << endl;
 
             now_beam.pop();
             auto legal_actions = now_state->legal_actions();
             for (const auto &action : legal_actions)
             {
-                // cerr << "deb " << __LINE__ << endl;
+                // cerr << "action0 " << action.first << " (" << id_to_x[action.first] << " " << id_to_y[action.first] << ")" << endl;
+                // cerr << "action1 " << action.second << " (" << id_to_x[action.second] << " " << id_to_y[action.second] << ")" << endl;
+                // cerr << "action " << action.first << " " << action.second << " target_x " << now_state->target_x_ << " L" << __LINE__ << endl;
 
                 auto next_state = now_state->cloneAdvanced(action);
                 if (next_state->is_dead())
@@ -301,7 +313,7 @@ int main()
     auto state_ptr = std::make_shared<State>();
     state_ptr->read();
     // cerr << "deb " << __LINE__ << endl;
-    auto actions = beamSearchAction(state_ptr, 20);
+    auto actions = beamSearchAction(state_ptr, 5);
     // cerr << "deb " << __LINE__ << endl;
     cout << actions.size() << endl;
     for (auto &action : actions)
