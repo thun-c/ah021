@@ -20,7 +20,7 @@ using std::vector;
 constexpr const int N = 30;
 constexpr const int M = 465;
 constexpr const int KORG = 10000;
-constexpr const int K = 1000; // KORG
+constexpr const int K = KORG; // KORG
 
 constexpr const int64_t INF = 1000000000LL; // あり得ないぐらい大きなスコアの例を用意しておく
 
@@ -204,7 +204,6 @@ public:
     {
         auto clone = std::make_shared<State>();
         *clone = *this;
-        auto actions = clone->legal_actions();
         clone->advance(action);
         clone->parent_ = shared_from_this();
         clone->last_action_ = action;
@@ -221,7 +220,7 @@ std::vector<std::pair<int, int>> beamSearchAction(std::shared_ptr<State> state, 
     // cerr << "deb " << __LINE__ << endl;
 
     now_beam.emplace(state);
-    for (int t = 0;; t++)
+    for (int t = 0; t < K; t++)
     {
         // cerr << "t " << t << "," << __LINE__ << endl;
         std::priority_queue<StatePtr, std::vector<StatePtr>, std::greater<StatePtr>> next_beam;
@@ -280,6 +279,10 @@ std::vector<std::pair<int, int>> beamSearchAction(std::shared_ptr<State> state, 
             break;
         }
         now_beam = next_beam;
+        if (now_beam.size() == 0)
+        {
+            return {};
+        }
     }
 
     std::vector<std::pair<int, int>> actions{};
@@ -313,7 +316,7 @@ int main()
     auto state_ptr = std::make_shared<State>();
     state_ptr->read();
     // cerr << "deb " << __LINE__ << endl;
-    auto actions = beamSearchAction(state_ptr, 5);
+    auto actions = beamSearchAction(state_ptr, 10);
     // cerr << "deb " << __LINE__ << endl;
     cout << actions.size() << endl;
     for (auto &action : actions)
