@@ -19,8 +19,8 @@ using std::vector;
 
 constexpr const int N = 30;
 constexpr const int M = 465;
-constexpr const int K = 10000;
-// constexpr const int K = 1;
+constexpr const int KORG = 10000;
+constexpr const int K = 1000; // KORG
 
 constexpr const int64_t INF = 1000000000LL; // あり得ないぐらい大きなスコアの例を用意しておく
 
@@ -194,7 +194,7 @@ public:
                 }
             }
         }
-        assert(actions.size() > 0);
+        // assert(actions.size() > 0);
         return actions;
     }
 

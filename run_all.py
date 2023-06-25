@@ -15,7 +15,7 @@ for file in sorted(glob.glob("tools/in/*")):
 
         subprocess.run(f"build/main <tools/in/{target}.txt > tools/out/out{target}.txt", shell=True, stderr=subprocess.PIPE)
 
-        proc = subprocess.run([f"tools/target/release/vis",
+        proc = subprocess.run([f"tools/target/debug/vis",
                                f"tools/in/{target}.txt",
                                f"tools/out/out{target}.txt"],
                               stdout=subprocess.PIPE,
