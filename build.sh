@@ -1,1 +1,1 @@
-g++ main.cpp -o build/main -O2 -std=c++17
+g++ main.cpp -o build/main -O2 -std=c++17 
